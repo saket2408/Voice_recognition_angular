@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      name: angular-web-app
+      namespace: hertz-5-in-1
+      labels:
+        project: angular-web-app
+        version: 0.0.0
+        provider: nodeshift
+        app: angular-web-app
+        app.kubernetes.io/name: nodejs
+        app.kubernetes.io/component: angular-web-app
+        app.kubernetes.io/instance: angular-web-app
+        app.openshift.io/runtime: nodejs
+      annotations:
+        nodeshift/git-branch: master
+        nodeshift/git-commit: 57199bea83ab2d5556e72782661dc48bc7607ec6
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 2
+      selector:
+        app: angular-web-app
+        project: angular-web-app
+        provider: nodeshift
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - angular-web-app
+            from:
+              kind: ImageStreamTag
+              namespace: hertz-5-in-1
+              name: 'angular-web-app:latest'
+      template:
+        metadata:
+          labels:
+            project: angular-web-app
+            version: 0.0.0
+            provider: nodeshift
+            app: angular-web-app
+          annotations:
+            nodeshift/git-branch: master
+            nodeshift/git-commit: 57199bea83ab2d5556e72782661dc48bc7607ec6
+        spec:
+          containers:
+            - image: angular-web-app
+              name: angular-web-app
+              securityContext:
+                privileged: false
+              ports:
+                - containerPort: 8080
+                  name: http
+                  protocol: TCP
+              env: []
+  - apiVersion: v1
+    kind: Service
+    spec:
+      selector:
+        project: angular-web-app
+        provider: nodeshift
+      ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 8080
+          name: http
+      type: ClusterIP
+    metadata:
+      name: angular-web-app
+      namespace: hertz-5-in-1
+      labels:
+        project: angular-web-app
+        version: 0.0.0
+        provider: nodeshift
+        app.kubernetes.io/name: nodejs
+        app.kubernetes.io/component: angular-web-app
+        app.kubernetes.io/instance: angular-web-app
+        app.openshift.io/runtime: nodejs
+      annotations:
+        nodeshift/git-branch: master
+        nodeshift/git-commit: 57199bea83ab2d5556e72782661dc48bc7607ec6
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    spec:
+      to:
+        kind: Service
+        name: angular-web-app
+      port:
+        targetPort: 8080
+    metadata:
+      name: angular-web-app
+      labels:
+        project: angular-web-app
+        version: 0.0.0
+        provider: nodeshift
+        app.kubernetes.io/name: nodejs
+        app.kubernetes.io/component: angular-web-app
+        app.kubernetes.io/instance: angular-web-app
+        app.openshift.io/runtime: nodejs
