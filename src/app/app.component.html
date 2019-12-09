@@ -1,129 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>CRUD-MONGO</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Food Repository</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+<script src="https://cdn.pubnub.com/pubnub-3.15.1.min.js"></script>
+<script src="https://cdn.pubnub.com/sdk/pubnub-angular/pubnub-angular-3.2.1.min.js"></script>
+
 </head>
 <body>
-    <h1>Employee Repository</h1>
-    <br>
-    <button type="button" class="btn btn-primary" (click)="hideEmployees()" data-toggle="modal" data-target="#myModal">
-        Add Employee
-      </button>
-      &nbsp;
-      <button type="button" class="btn btn-secondary" (click)="viewEmployees()">
-          View Employees
-        </button>
-       <span style="float: right;">
-        <input type="text" class="form-group"  placeholder="search" id="search" x-webkit-speech/>&nbsp;
-        <input type="submit" value="search" value="search" class="btn btn-default"/>
-      </span> 
-
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-          
-            <!-- Modal Header -->
-            <div class="modal-header">
-              <h4 class="modal-title">Enter Your Details</h4>
-              <button type="button" class="close" id="close" data-dismiss="modal">&times;</button>
-            </div>
-            
-            <!-- Modal body -->
-            <div class="modal-body">
-                    <div class="form-group">
-                        <label for="empId">Your Employee ID:</label>
-                        <input type="text" class="form-control" placeholder="Enter your Emp ID" id="empId" required>
-                      </div>
-                    <div class="form-group">
-                      <label for="name">Your Name:</label>
-                      <input type="text" class="form-control" placeholder="Enter your name" id="name" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="email">Email:</label>
-                      <input type="email" class="form-control" placeholder="Enter your email" id="email" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="age">Your age:</label>
-                        <input type="number" class="form-control" placeholder="Enter your age" id="age" required>
-                    </div>
-                   
-            </div>
-           
-                <button type="button" class="btn btn-primary" (click)="addEmployee()">Submit</button>      
-          </div>
+  <br>
+  <div class="alert alert-danger" role="alert">NOTE: Requires Chrome Desktop or Android Browser</div>
+      <div class="row">
+    <div class="form-group col-sm-4">
+        <label for="sel1"><h3>Search Food by:</h3></label>
+        <select class="form-control" id="sel1">
+          <option value="title">Title</option>
+          <option value="type">Type</option>
+        </select>
+      </div>
+      <div class="col-sm-4">
+          <br><br>
+      
+          <input type="text" id="text" placeholder="say something!!" class="form-control " disabled/>
+        </div>
+        <div class="col-sm-4">
+            <br>
+          <img src="https://cdn.designbyhumans.com/product_images/p/966932.f56.cbd1eS7ay1Cm2MjUAAA-650x650-b-p.png" style="display: inline-block;" (click)="dictateIt()" title="click to speak" alt="click me!" height="70px" width="70px">
         </div>
       </div>
-      
       <br>
       <br>
+      <hr>
 
+      <br>
     
-      <div *ngIf="flag" id="table">
-          <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Employee ID</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Age</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-
-                <tr *ngFor="let user of table">
-                  <td>{{user._id}}</td>
-                  <td>{{user.name}}</td>
-                  <td>{{user.email}}</td>
-                  <td>{{user.age}}</td>
-                  <td><button type="button" class="btn btn-warning" (click)="retrieveEmployee(user._id)">Update</button>
-                    <button type="button" class="btn btn-danger" (click)="deleteEmployee(user._id)">Delete</button></td>
-                </tr>
-                </tbody>
-              </table>
-
-
+      <div id='content'>
       </div>
-
-
-      <input type="hidden"  id="btn1" data-toggle="modal" data-target="#myModal1"/>
-      
-    <div class="modal fade" id="myModal1">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-        
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">Edit Your Details</h4>
-            <button type="button" class="close" id="close1" data-dismiss="modal">&times;</button>
-          </div>
-          
-          <!-- Modal body -->
-          <div class="modal-body">
-                  <div class="form-group">
-                      <label for="empId1">Your Employee ID:</label>
-                      <input type="text" class="form-control" placeholder="Enter your Emp ID" id="empId1" required>
-                    </div>
-                  <div class="form-group">
-                    <label for="name1">Your Name:</label>
-                    <input type="text" class="form-control" placeholder="Enter your name" id="name1" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="email1">Email:</label>
-                    <input type="email" class="form-control" placeholder="Enter your email" id="email1" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="age1">Your age:</label>
-                      <input type="number" class="form-control" placeholder="Enter your age" id="age1" required>
-                  </div>
-                 
-          </div>
-          <button type="button" class="btn btn-primary" (click)="updateEmployee()">Update</button>      
-        </div>
-      </div>
-    </div>
 </body>
 </html>
